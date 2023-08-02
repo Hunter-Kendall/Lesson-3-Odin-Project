@@ -70,34 +70,66 @@ describe MagicSeven do
   # Write a test for each of the following methods:
 
   describe '#subtract_four' do
+    context "when the previous step is 7" do
+      it "returns 3" do
+        previous_step = 7
+        result = game.subtract_four(previous_step) # Act
+        expect(result).to eq(3) 
+      end  
+    end
   end
 
   describe '#divide_by_two' do
+    context "when the previous step is 8" do
+      it "returns 4" do
+        previous_step = 8
+        result = game.divide_by_two(previous_step) # Act
+        expect(result).to eq(4) 
+      end  
+    end
   end
 
   # The following tests will need you to create new instances of MagicSeven with
   # a specific value for the random_number.
   describe '#subtract_random_number' do
+    context "when previous number is 10 and random number is 3" do
+      subject(:game_three) {described_class.new(3)}
+      it "returns 7" do
+        previous_step = 10
+        result = game_three.subtract_random_number(previous_step)
+        expect(result).to eq(7)
+      end
+    end
   end
 
   # The #play method will always return seven! Test this game, using any
   # integer as the random_number. Update the context with the number.
   describe '#play' do
-    context 'when the random number is ...' do
+    context 'when the random number is 6' do
       # remove the 'x' before running this test
-      xit 'will return 7' do
+      subject(:full_test) {described_class.new(6)}
+      
+      it 'will return 7' do
+        result = full_test.play
+        expect(result).to eq(7)
       end
     end
 
-    context 'when the random number is ...' do
+    context 'when the random number is 10020039940' do
       # remove the 'x' before running this test
-      xit 'will return 7' do
+      subject(:full_test_two) {described_class.new(10020039940)}
+      it 'will return 7' do
+        result = full_test_two.play
+        expect(result).to eq(7)
       end
     end
 
-    context 'when the random number is ...' do
+    context 'when the random number is 31' do
       # remove the 'x' before running this test
-      xit 'will return 7' do
+      subject(:full_test_three) {described_class.new(31)}
+      it 'will return 7' do
+        result = full_test_three.play
+        expect(result).to eq(7)
       end
     end
   end

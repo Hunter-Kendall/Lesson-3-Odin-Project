@@ -12,4 +12,7 @@ class Drink
   def full?
     ounces >= 16
   end
+  def empty?
+    ounces == 0
+  end
 end
