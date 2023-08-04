@@ -1,5 +1,5 @@
 class Board
-    attr_reader :board
+    attr_accessor :board
 
     def initialize
         @board = [1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -29,7 +29,7 @@ class Player
     def select_tile(board)
         print "#{name}'s turn: "
         tile = gets.to_i
-        if tile > 9 && tile < 1
+        if tile > 9 || tile < 1
             puts "Out of range! Select an open and existing tile."
             select_tile(board)
         else
@@ -50,29 +50,47 @@ class Player
 end
 
 class Game
-    attr_accessor :current_turn, :x, :o
+    attr_accessor :current_turn, :x, :o, :turn
     def initialize(board, x, o)
         @board = board
         @x = x
         @o = o
         @o.update_marker("O")
+        @turn = 0
         @current_turn = x
         @positions = [[1,2,3],[4,5,6],[7,8,9],[1,4,7],[2,5,8],[3,6,9],[1,5,9],[3,5,7]]
     end
 
     def player_turn
-        if @current_turn == @x
-            @board.display_board
-            @x.select_tile(@board)
-            self.check_win
-            @current_turn = @o
-            self.player_turn
+        if @turn == 9
+            puts "Game is a Draw!"
+            self.next_game
         else
-            @board.display_board
-            @o.select_tile(@board)
-            self.check_win
-            @current_turn = @x
-            self.player_turn
+            if @current_turn == @x
+                @board.display_board
+                @x.select_tile(@board)
+                win = self.check_win
+                if win
+                    puts "#{current_turn.name} wins!"
+                    puts "#{@x.name}: #{@x.wins} | #{@o.name}: #{@o.wins}"
+                    return self.next_game
+                end
+                @current_turn = @o
+                @turn += 1
+                self.player_turn
+            else
+                @board.display_board
+                @o.select_tile(@board)
+                win = self.check_win
+                if win
+                    puts "#{current_turn.name} wins!"
+                    puts "#{@x.name}: #{@x.wins} | #{@o.name}: #{@o.wins}"
+                    return self.next_game
+                end
+                @current_turn = @x
+                @turn += 1
+                self.player_turn
+            end
         end
     end
     def player_swap
@@ -84,7 +102,7 @@ class Game
         puts "o is now #{@o.name}"
         @x.update_marker("X")
         @o.update_marker("O")
-        
+        @current_turn = @x
     end
     def check_win
         players_tiles = current_turn.tiles
@@ -94,24 +112,21 @@ class Game
                 @board.reset_board
                 @x.reset_player
                 @o.reset_player
-
                 
-                puts "#{current_turn.name} wins!"
-                puts "#{@x.name}: #{@x.wins} | #{@o.name}: #{@o.wins}"
-                return self.next_game
+                return true
             end
         end
+        return false
     end
     def next_game
-        print "Do you want to play again? (y/n): "
+        puts "Do you want to play again? (y/n): "
         choice = gets.strip
-        puts choice
+        
         if choice == "y"
-            
+            @turn = 0
             self.player_swap
             self.player_turn
-        else
-            exit(true)
+
         end
     end
 end
