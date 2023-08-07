@@ -37,22 +37,26 @@ class Board
             end
         end
     end
+    def check_array?(arr, marker)
+        win_string = marker + marker + marker + marker
+        no_spaces = arr.map{ |str| str.gsub(" ", "") }
+        result = no_spaces.join("")
+        if result.match(win_string)
+            return true
+        end
+    end
     def check_win(marker)
         win_string = marker + marker + marker + marker
         #checks rows
         @board.each do |row|
-            no_spaces = row.map{ |str| str.gsub(" ", "") }
-            result = no_spaces.join("")
-            if result.match(win_string)
+            if check_array?(row, marker)
                 return true
             end
         end
         #checks columns
         (0..6).each do |col|
             column = [@board[0][col], @board[1][col],@board[2][col],@board[3][col],@board[4][col],@board[5][col]]
-            no_spaces = column.map{ |str| str.gsub(" ", "") }
-            result = no_spaces.join("")
-            if result.match(win_string)
+            if check_array?(column, marker)
                 return true
             end
         end
@@ -70,9 +74,7 @@ class Board
                     end
                 end
             end
-            no_spaces = arr.map{ |str| str.gsub(" ", "") }
-            result = no_spaces.join("")
-            if result.match(win_string)
+            if check_array?(arr, marker)
                 return true
             end
         end
@@ -92,9 +94,7 @@ class Board
                     end
                 end
             end
-            no_spaces = arr.map{ |str| str.gsub(" ", "") }
-            result = no_spaces.join("")
-            if result.match(win_string)
+            if check_array?(arr, marker)
                 return true
             end
         end
