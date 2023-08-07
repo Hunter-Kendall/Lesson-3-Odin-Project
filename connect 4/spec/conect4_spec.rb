@@ -44,6 +44,25 @@ describe Board do
             end
         end
     end
+    describe "#flip_board" do
+        it "flips the current board" do
+            board = Board.new
+            board.board = [[" X ", " _ ", " _ ", " _ ", " _ ", " _ ", " _ "],
+                           [" _ ", " X ", " _ ", " _ ", " _ ", " _ ", " _ "],
+                           [" _ ", " _ ", " X ", " _ ", " _ ", " _ ", " _ "],
+                           [" _ ", " _ ", " _ ", " X ", " _ ", " _ ", " _ "],
+                           [" _ ", " _ ", " _ ", " _ ", " X ", " _ ", " _ "],
+                           [" _ ", " _ ", " _ ", " _ ", " _ ", " X ", " _ "]]
+            result = board.flip_board
+            expect(result).to eq([[" _ ", " _ ", " _ ", " _ ", " _ ", " _ ", " X "],
+                                  [" _ ", " _ ", " _ ", " _ ", " _ ", " X ", " _ "],
+                                  [" _ ", " _ ", " _ ", " _ ", " X ", " _ ", " _ "],
+                                  [" _ ", " _ ", " _ ", " X ", " _ ", " _ ", " _ "],
+                                  [" _ ", " _ ", " X ", " _ ", " _ ", " _ ", " _ "],
+                                  [" _ ", " X ", " _ ", " _ ", " _ ", " _ ", " _ "]])
+            
+        end
+    end
     describe "#check_win" do
         it "Row win"do
 
@@ -122,6 +141,40 @@ describe Board do
                            [" _ ", " _ ", " _ ", " _ ", " _ ", " _ ", " X "],
                            [" _ ", " _ ", " _ ", " _ ", " _ ", " _ ", " _ "],
                            [" _ ", " _ ", " _ ", " _ ", " _ ", " _ ", " _ "]]
+            result = board.check_win("X")
+            expect(result).to be true
+        end
+        it "diagonal wins to the left" do
+            board = Board.new
+            board.board = [[" X ", " X ", " _ ", " _ ", " _ ", " _ ", " X "],
+                           [" X ", " X ", " X ", " _ ", " _ ", " X ", " _ "],
+                           [" X ", " _ ", " _ ", " _ ", " X ", " _ ", " _ "],
+                           [" _ ", " _ ", " _ ", " X ", " _ ", " _ ", " _ "],
+                           [" _ ", " _ ", " _ ", " _ ", " _ ", " _ ", " _ "],
+                           [" _ ", " _ ", " _ ", " _ ", " _ ", " _ ", " _ "]]
+            result = board.check_win("X")
+            expect(result).to be true
+        end
+        it "more diagonal wins to the left" do
+            board = Board.new
+            board.board = [[" X ", " _ ", " _ ", " X ", " _ ", " _ ", " X "],
+                           [" _ ", " _ ", " X ", " _ ", " _ ", " X ", " _ "],
+                           [" X ", " X ", " _ ", " _ ", " _ ", " _ ", " _ "],
+                           [" X ", " _ ", " _ ", " _ ", " _ ", " _ ", " _ "],
+                           [" _ ", " _ ", " _ ", " _ ", " _ ", " _ ", " _ "],
+                           [" _ ", " _ ", " _ ", " _ ", " _ ", " _ ", " _ "]]
+            result = board.check_win("X")
+            expect(result).to be true
+        end
+
+        it "more diagonal wins to the left" do
+            board = Board.new
+            board.board = [[" X ", " _ ", " _ ", " _ ", " _ ", " _ ", " X "],
+                           [" _ ", " _ ", " _ ", " _ ", " _ ", " X ", " _ "],
+                           [" X ", " _ ", " _ ", " _ ", " _ ", " _ ", " X "],
+                           [" _ ", " _ ", " _ ", " _ ", " _ ", " X ", " _ "],
+                           [" _ ", " _ ", " _ ", " _ ", " X ", " _ ", " _ "],
+                           [" _ ", " _ ", " _ ", " X ", " _ ", " _ ", " _ "]]
             result = board.check_win("X")
             expect(result).to be true
         end

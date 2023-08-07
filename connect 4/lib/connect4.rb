@@ -45,21 +45,13 @@ class Board
             return true
         end
     end
-    def check_win(marker)
-        win_string = marker + marker + marker + marker
-        #checks rows
-        @board.each do |row|
-            if check_array?(row, marker)
-                return true
-            end
+    def flip_board
+        @board.each_with_index do |row, idx|
+            @board[idx] = @board[idx].reverse
         end
-        #checks columns
-        (0..6).each do |col|
-            column = [@board[0][col], @board[1][col],@board[2][col],@board[3][col],@board[4][col],@board[5][col]]
-            if check_array?(column, marker)
-                return true
-            end
-        end
+    end
+
+    def check_diagonal?(marker, board)
         #checks right diagonals from the top 
         (0..3).each do |start_col|
             row = 0
@@ -69,7 +61,7 @@ class Board
                     if start_col + col_adder <= 6
                         column = start_col + col_adder  # Fixed the typo here
                         
-                        arr << @board[row][column]
+                        arr << board[row][column]
                         row += 1
                     end
                 end
@@ -89,7 +81,7 @@ class Board
                 # puts "arr: #{arr} row: #{row} col: #{column}"
                 if row <= 5
                     if column <= max_col
-                        arr << @board[row][column]
+                        arr << board[row][column]
                         row += 1
                     end
                 end
@@ -98,8 +90,31 @@ class Board
                 return true
             end
         end
-
-
+    end
+    def check_win(marker)
+        win_string = marker + marker + marker + marker
+        #checks rows
+        @board.each do |row|
+            if check_array?(row, marker)
+                return true
+            end
+        end
+        #checks columns
+        (0..6).each do |col|
+            column = [@board[0][col], @board[1][col],@board[2][col],@board[3][col],@board[4][col],@board[5][col]]
+            if check_array?(column, marker)
+                return true
+            end
+        end
+        #checks right diagonals from the top and side 
+        if check_diagonal?(marker, @board)
+            return true
+        end
+        #checks left diagonals from the top and side
+        flipped = self.flip_board
+        if check_diagonal?(marker, flipped)
+            return true
+        end
         return false 
     end
 end
@@ -133,6 +148,8 @@ if __FILE__ == $0
             [" _ ", " _ ", " _ ", " _ ", " _ ", " _ ", " _ "],
             [" _ ", " _ ", " _ ", " _ ", " _ ", " _ ", " _ "],
             [" _ ", " _ ", " _ ", " _ ", " _ ", " _ ", " _ "]]
+    board.flip_board
+    board.board_display
     board.check_win("X")
     p1 = Player.new("hunter")
     p2 = Player.new("bot")
