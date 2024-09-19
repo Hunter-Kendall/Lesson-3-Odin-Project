@@ -1,0 +1,38 @@
+name: Merge
+
+on:
+  pull_request:
+    types: [labeled]  # Trigger when a label is added to a PR
+
+jobs:
+  merge_to_staging:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.state == 'open' && contains(github.event.pull_request.labels.*.name, 'staging')
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      - name: Configure Git
+        run: |
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
+
+      - name: Merge PR to Staging with Squash
+        run: |
+          # Get the branch name from the PR
+          BRANCH_NAME="${{ github.event.pull_request.head.ref }}"
+
+          # Fetch the latest changes
+          git fetch origin
+
+          # Checkout the staging branch
+          git checkout staging
+
+          # Squash merge the PR branch into the staging branch
+          git merge --squash ${{ github.event.pull_request.head.sha }}
+
+          # Commit with the branch name as the commit message
+          git commit -m "Merged PR branch: ${BRANCH_NAME}"
+
+          # Push the changes to the staging branch
+          git push origin staging
