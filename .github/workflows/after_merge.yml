@@ -46,11 +46,10 @@ jobs:
       # Step 6: Re-merge branches into staging in the correct order
       - name: Merge branches in order
         run: |
+          git checkout staging
+          git pull
           for branch in $(cat sorted_prs.txt); do
-            echo "Merging $branch into staging"
-            git fetch origin
-            git pull origin --force
-            git checkout staging
+            echo "Merging $branch into staging"            
             git merge --squash origin/$branch
             git commit -m "Squash merged $branch into staging"
           done
