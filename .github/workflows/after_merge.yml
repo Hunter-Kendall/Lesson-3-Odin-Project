@@ -26,13 +26,13 @@ jobs:
       - name: Install GitHub CLI
         run: sudo apt-get install gh -y
 
-      # Step 4: Use GitHub's API to get all PRs with the 'staging' label
-      - name: Get PRs with 'staging' label
+      # Step 4: Get only open PRs with the 'staging' label
+      - name: Get open PRs with 'staging' label
         id: get_prs
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Set GitHub token for gh CLI authentication
         run: |
-          # Get all PRs with 'staging' label and extract necessary info using GitHub API
+          # Fetch only open PRs with 'staging' label and extract necessary info (branch name and timestamp)
           gh pr list --state open --label staging --json number,headRefName,updatedAt > prs.json
           echo "::set-output name=prs::$(cat prs.json)"
 
