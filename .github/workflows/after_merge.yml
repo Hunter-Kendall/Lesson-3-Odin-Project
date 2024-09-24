@@ -25,6 +25,8 @@ jobs:
       # Step 3: Use GitHub's API to get all PRs with the 'staging' label
       - name: Get PRs with 'staging' label
         id: get_prs
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
         run: |
           # Get all PRs with 'staging' label and extract necessary info using GitHub API
           gh pr list --state open --label staging --json number,headRefName,updatedAt > prs.json
