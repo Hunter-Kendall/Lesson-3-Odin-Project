@@ -225,7 +225,7 @@ describe Game do
         context "when player is" do
             before do
                 allow(player_1).to receive(:tiles).and_return([2, 5, 8])
-                allow(player_2).to receive(:tiles).and_return([4, 5, 9])
+                allow(player_2).to receive(:tiles).and_return([4, 5, 59])
                 allow(player_2).to receive(:update_marker).and_return("O")
                 allow(player_1).to receive(:wins=)
                 allow(player_2).to receive(:reset_player)
