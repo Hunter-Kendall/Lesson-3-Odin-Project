@@ -6,7 +6,7 @@ class Board
     end
 
     def reset_board
-        @board = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+        @board = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     end
 
     def display_board
@@ -36,7 +36,7 @@ class Player
             idx = board.board.find_index(tile)
             if idx == nil
                 puts "Choose an open space!"
-                
+
                 select_tile(board)
             else
                 board.board[idx] = marker
@@ -112,7 +112,7 @@ class Game
                 @board.reset_board
                 @x.reset_player
                 @o.reset_player
-                
+
                 return true
             end
         end
@@ -121,7 +121,7 @@ class Game
     def next_game
         puts "Do you want to play again? (y/n): "
         choice = gets.strip
-        
+
         if choice == "y"
             @turn = 0
             self.player_swap
