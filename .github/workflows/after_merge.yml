@@ -49,6 +49,7 @@ jobs:
           for branch in $(cat sorted_prs.txt); do
             echo "Merging $branch into staging"
             git fetch origin
+            git pull origin --force
             git checkout staging
             git merge --squash origin/$branch
             git commit -m "Squash merged $branch into staging"
