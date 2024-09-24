@@ -7,7 +7,7 @@ describe Board do
             expect(board.board).to eq([1, 2, 3, 4, 5, 6, 7, 8, 9])
         end
     end
-  
+
     describe "#reset_board" do
         it "should reset the board to its initial values" do
             board = Board.new
@@ -16,7 +16,7 @@ describe Board do
             expect(board.board).to eq([1, 2, 3, 4, 5, 6, 7, 8, 9])  # Check if the board is reset
         end
     end
-  
+
     describe "#display_board" do
         it "should display the current board in the correct format" do
             board = Board.new
@@ -35,7 +35,7 @@ describe Player do
             expect(player.marker).to eq("X")
         end
     end
-  
+
     describe "#update_marker" do
         it "should update the player's marker" do
             player = Player.new("Alice")
@@ -43,7 +43,7 @@ describe Player do
             expect(player.marker).to eq("A")
         end
     end
-  
+
     describe "#select_tile" do
         let(:game_board) { instance_double(Board, board: ["X", 2, 3, 4, 5, 6, 7, 8, 9]) }
         subject(:player) { described_class.new("Hunter") }
@@ -69,7 +69,7 @@ describe Player do
                 expect(player).to receive(:puts).with(error_message).once
                 player.select_tile(game_board)
             end
-            
+
         end
 
         context "player selects" do
@@ -83,13 +83,13 @@ describe Player do
                 expect(player).to receive(:puts).with(error_message).once
                 player.select_tile(game_board)
             end
-            
+
         end
-        
+
         # Write test cases to test the select_tile method.
         # You can use test doubles for the 'Board' class to isolate the testing.
     end
-  
+
     describe "#reset_player" do
         it "should reset the player's tiles" do
             player = Player.new("Bob")
@@ -104,7 +104,7 @@ describe Game do
     let(:hunter) { Player.new("Hunter") }
     let(:bot) { Player.new("bot") }
     let(:board) { Board.new }
-  
+
     describe "#initialize" do
         it "should initialize the game with the correct initial values" do
             game = Game.new(board, hunter, bot)
@@ -113,7 +113,7 @@ describe Game do
             expect(game.o).to eq(bot)
         end
     end
-  
+
     describe "#player_swap" do
         it "should swap the players correctly" do
             game = Game.new(board, hunter, bot)
@@ -123,7 +123,7 @@ describe Game do
             expect(game.o).to eq(hunter)
         end
     end
-  
+
     describe "#check_win" do
         # Write test cases to test the check_win method.
         # You can use test doubles for the 'Player' class to isolate the testing.
@@ -131,7 +131,7 @@ describe Game do
         let(:player_1) { instance_double(Player, tiles: [], marker: "X", wins: 0) }
         let(:player_2) { instance_double(Player, tiles: [], marker: "O", wins: 0) }
         subject(:game) { described_class.new(game_board, player_1, player_2) }
-        
+
         context "when player is" do
             before do
                 allow(player_1).to receive(:tiles).and_return([1, 2, 7])
@@ -140,7 +140,7 @@ describe Game do
             end
             it 'not in a winning position' do
                 expect(game.check_win).to be false
-            end    
+            end
         end
         context "when player is" do
             before do
@@ -159,8 +159,8 @@ describe Game do
             it 'winning player wins increases by 1' do
                 expect(player_1).to receive(:wins=).with(1)
                 game.check_win
-                
-            end   
+
+            end
         end
         context "when player is" do
             before do
@@ -179,8 +179,8 @@ describe Game do
             it 'winning player wins increases by 1' do
                 expect(player_1).to receive(:wins=).with(1)
                 game.check_win
-                
-            end   
+
+            end
         end
         context "when player is" do
             before do
@@ -199,8 +199,8 @@ describe Game do
             it 'winning player wins increases by 1' do
                 expect(player_1).to receive(:wins=).with(1)
                 game.check_win
-                
-            end   
+
+            end
         end
         context "when player is" do
             before do
@@ -219,13 +219,13 @@ describe Game do
             it 'winning player wins increases by 1' do
                 expect(player_1).to receive(:wins=).with(1)
                 game.check_win
-                
-            end   
+
+            end
         end
         context "when player is" do
             before do
                 allow(player_1).to receive(:tiles).and_return([2, 5, 8])
-                allow(player_2).to receive(:tiles).and_return([4, 5, 9])
+                allow(player_2).to receive(:tiles).and_return([4, 5, 59])
                 allow(player_2).to receive(:update_marker).and_return("O")
                 allow(player_1).to receive(:wins=)
                 allow(player_2).to receive(:reset_player)
@@ -239,8 +239,8 @@ describe Game do
             it 'winning player wins increases by 1' do
                 expect(player_1).to receive(:wins=).with(1)
                 game.check_win
-                
-            end   
+
+            end
         end
         context "when player is" do
             before do
@@ -259,8 +259,8 @@ describe Game do
             it 'winning player wins increases by 1' do
                 expect(player_1).to receive(:wins=).with(1)
                 game.check_win
-                
-            end   
+
+            end
         end
         context "when player is" do
             before do
@@ -279,8 +279,8 @@ describe Game do
             it 'winning player wins increases by 1' do
                 expect(player_1).to receive(:wins=).with(1)
                 game.check_win
-                
-            end   
+
+            end
         end
         context "when player is" do
             before do
@@ -299,11 +299,11 @@ describe Game do
             it 'winning player wins increases by 1' do
                 expect(player_1).to receive(:wins=).with(1)
                 game.check_win
-                
-            end   
+
+            end
         end
     end
-  
+
     describe "#next_game" do
         # Write test cases to test the next_game method.
         # You can use test doubles and stubs/mocks for 'gets' method to simulate user input.
@@ -328,7 +328,7 @@ describe Game do
             end
         end
     end
-  
+
     describe "#player_turn" do
         # Write test cases to test the player_turn method.
         # You can use test doubles and stubs/mocks for 'gets' method to simulate user input.
@@ -336,7 +336,7 @@ describe Game do
         let(:hunter) { instance_double(Player, tiles: [], name: "Hunter", wins: 0) }
         let(:bot) { instance_double(Player, tiles: [], name: "bot", wins: 0) }
         subject(:game) { described_class.new(board, hunter, bot) }
-      
+
         context "turn is X" do
             before do
                 allow(hunter).to receive(:update_marker)
@@ -347,12 +347,12 @@ describe Game do
                 allow(game).to receive(:check_win).and_return(true)
                 allow(game).to receive(:next_game)
             end
-      
+
             it "and X wins" do
                 expect(game).to receive(:next_game)
                 game.player_turn
             end
-      
+
             it "should call check_win" do
                 expect(game).to receive(:check_win).and_call_original
                 game.player_turn
@@ -368,15 +368,15 @@ describe Game do
                 allow(game).to receive(:check_win).and_return(true)
                 allow(game).to receive(:next_game)
             end
-        
+
             it "should call player_turn" do
                 expect(game).to receive(:player_turn).and_call_original
                 game.player_turn
             end
         end
-      
+
         # Add similar tests for when turn is O
-    
+
         context "turn is O" do
             before do
                 allow(hunter).to receive(:update_marker)
@@ -388,12 +388,12 @@ describe Game do
                 allow(game).to receive(:check_win).and_return(true)
                 allow(game).to receive(:next_game)
             end
-    
+
             it "and O wins" do
                 expect(game).to receive(:next_game)
                 game.player_turn
             end
-    
+
             it "should call check_win" do
                 expect(game).to receive(:check_win).and_call_original
                 game.player_turn
@@ -409,9 +409,9 @@ describe Game do
                 allow(bot).to receive(:select_tile)
                 allow(game).to receive(:check_win).and_return(true)
                 allow(game).to receive(:next_game)
-                
+
             end
-        
+
             it "should call player_turn" do
                 expect(game).to receive(:player_turn).and_call_original
                 game.player_turn
@@ -427,7 +427,7 @@ describe Game do
                 allow(game).to receive(:turn).and_return(9)
                 allow(game).to receive(:next_game)
 
-                
+
             end
             it "because its a draw message" do
                 message = "Game is a Draw!"
@@ -441,5 +441,4 @@ describe Game do
             end
         end
     end
-end  
-  
+end
