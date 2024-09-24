@@ -1,0 +1,54 @@
+name: Reset and Re-Merge to Staging
+
+on:
+  pull_request:
+    types: [closed]  # Triggers when a PR is closed (merged or not)
+
+jobs:
+  reset_and_merge:
+    if: github.event.pull_request.merged == true  # Only run if the PR was merged
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the repository
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      # Step 2: Reset staging branch to match main
+      - name: Reset staging to main
+        run: |
+          git fetch origin
+          git checkout staging
+          git reset --hard origin/main
+          git push --force origin staging
+
+      # Step 3: Use GitHub's API to get all PRs with the 'staging' label
+      - name: Get PRs with 'staging' label
+        id: get_prs
+        run: |
+          # Get all PRs with 'staging' label and extract necessary info using GitHub API
+          gh pr list --state open --label staging --json number,headRefName,updatedAt > prs.json
+          echo "::set-output name=prs::$(cat prs.json)"
+
+      # Step 4: Sort PRs by when the 'staging' label was applied (updatedAt)
+      - name: Sort PRs by label timestamp
+        id: sorted_prs
+        run: |
+          cat prs.json | jq -r '. | sort_by(.updatedAt) | .[] | .headRefName' > sorted_prs.txt
+          echo "::set-output name=branches::$(cat sorted_prs.txt)"
+
+      # Step 5: Re-merge branches into staging in the correct order
+      - name: Merge branches in order
+        run: |
+          for branch in $(cat sorted_prs.txt); do
+            echo "Merging $branch into staging"
+            git fetch origin
+            git checkout staging
+            git merge --squash origin/$branch
+            git commit -m "Squash merged $branch into staging"
+          done
+
+      # Step 6: Push the final changes to staging
+      - name: Push merged changes to staging
+        run: |
+          git push origin staging
