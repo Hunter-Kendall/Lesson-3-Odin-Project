@@ -2,11 +2,17 @@ name: Reset and Re-Merge to Staging
 
 on:
   pull_request:
-    types: [closed]  # Triggers when a PR is closed (merged or not)
+    types:
+      - closed   # Triggers when a PR is closed (merged or not)
+      - labeled
+      - unlabeled
 
 jobs:
   reset_and_merge:
-    if: github.event.pull_request.merged == true  # Only run if the PR was merged
+    # runs if a PR is merged or staging label is set on an open PR
+    if: |
+      github.event.pull_request.merged == true ||
+      (github.event.pull_request.state == 'open' && contains(github.event.pull_request.labels.*.name, 'Staging'))
     runs-on: ubuntu-latest
 
     steps:
@@ -20,7 +26,6 @@ jobs:
           git fetch origin
           git checkout staging
           git reset --hard origin/main
-          git push --force origin staging
 
       # Step 3: Install GitHub CLI
       - name: Install GitHub CLI
@@ -49,7 +54,7 @@ jobs:
           git checkout staging
           git pull
           for branch in $(cat sorted_prs.txt); do
-            echo "Merging $branch into staging"            
+            echo "Merging $branch into staging"
             git merge --squash origin/$branch
             git commit -m "Squash merged $branch into staging"
           done

@@ -1,0 +1,20 @@
+name: 'Update Staging'
+description: 'This action is meant to keep staging up to date'
+author: 'Hunter/Kyle'
+
+# Define your inputs here.
+inputs:
+  github-token:
+    description: 'gets the git hub token'
+    required: false
+    default:  ${{ github.token }}
+
+
+# # Define your outputs here.
+# outputs:
+#   time:
+#     description: 'Your output description here'
+
+runs:
+  using: node20
+  main: dist/index.js
