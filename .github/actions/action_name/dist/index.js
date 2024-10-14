@@ -17,7 +17,8 @@ const pullRequests = await octokit.rest.pulls.list({
   sort: 'created',
   direction: 'asc',
 })
-
+await exec('git config --global user.email "github-actions@github.com"')
+await exec('git config --global user.name "github-actions"')
 await exec('git checkout staging')
 await exec('git reset --hard origin/main')
 
