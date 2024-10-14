@@ -11,7 +11,7 @@ jobs:
     steps:
       # Step 1: Check out the repository
       - name: Check out repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       # Step 2: Reset staging branch to match main
       - name: Reset staging to main
         uses: ./.github/actions/action_name
