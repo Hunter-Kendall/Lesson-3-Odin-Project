@@ -23,8 +23,21 @@ await exec('git checkout staging')
 await exec('git reset --hard origin/main')
 
 for (const pr of pullRequests.data) {
-  const { title, number, head: { ref: branch } }= pr
-  await exec('git', ['merge', `origin/${branch}`, '--squash'])
-  await exec('git', ['commit', '-m', `${title} (#${number})`])
+  try {
+    const { title, number, head: { ref: branch } }= pr
+    await exec('git', ['merge', `origin/${branch}`, '--squash'])
+    await exec('git', ['commit', '-m', `${title} (#${number})`])
+  } catch {
+    await exec('git restore --staged .')
+    await exec('git restore .')
+    await exec('git clean -df')
+    octokit.rest.issues.createComment({
+      owner: github.context.repo.owner,
+      repo: github.context.repo.repo,
+      issue_number: number,
+      body: 'This branch could not be automatically added to staging due to merge conflicts.'
+    })
+  }
+
 }
 await exec('git push --force')
