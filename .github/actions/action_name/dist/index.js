@@ -23,7 +23,7 @@ await exec('git reset --hard origin/main')
 
 for (const pr of pullRequests.data) {
   const { title, number, head: { ref: branch } }= pr
-  await exec('git', ['merge', branch, '--squash'])
+  await exec('git', ['merge', `origin/${branch}`, '--squash'])
   await exec('git', ['commit', '-m', `${title} (#${number})`])
 }
 await exec('git push --force')
