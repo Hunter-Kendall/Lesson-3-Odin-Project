@@ -3,9 +3,7 @@ name: Reset and Re-Merge to Staging
 on:
   pull_request:
     types:
-      - closed   # Triggers when a PR is closed (merged or not)
-      - labeled
-      - unlabeled
+
 
 jobs:
   reset_and_merge:
