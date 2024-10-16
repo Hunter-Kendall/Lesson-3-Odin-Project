@@ -9,7 +9,7 @@ on:
       - synchronize
 jobs:
   maintain_staging:
-    if: (contains(github.event.pull_request.labels.name, 'staging')) || (github.event.action == 'closed' && github.event.pull_request.merged) || (github.event.label.name == 'Staging')
+    if: (contains(github.event.pull_request.labels.name, 'Staging')) || (github.event.action == 'closed' && github.event.pull_request.merged) || (github.event.label.name == 'Staging')
     runs-on: ubuntu-latest
 
     steps:
