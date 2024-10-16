@@ -6,6 +6,7 @@ on:
       - labeled
 jobs:
   maintain_staging:
+    if: contains(github.event.pull_request.labels.name, 'staging') || (github.event.action == 'closed' && github.event.pull_request.merged) || github.event.label == 'staging'
     runs-on: ubuntu-latest
 
     steps:
