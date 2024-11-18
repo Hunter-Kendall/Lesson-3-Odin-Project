@@ -17,6 +17,7 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
         with:
+          ref: staging
           fetch-depth: 0
       # Step 2: Reset staging branch to match main
       - name: Reset staging to main
