@@ -23,7 +23,7 @@ for (const pr of pullRequests.data) {
     try {
       await exec('git', ['merge', `origin/${branch}`, '--squash'])
       await exec('git', ['commit', '-m', `${title} (#${number})`])
-    } catch {
+    } catch(error) {
       await exec('git restore --staged .')
       await exec('git restore .')
       await exec('git clean -df')
@@ -31,7 +31,7 @@ for (const pr of pullRequests.data) {
         owner: github.context.repo.owner,
         repo: github.context.repo.repo,
         issue_number: number,
-        body: 'This branch could not be automatically added to staging due to merge conflicts.'
+        body: error.message,
       })
     }
   }
