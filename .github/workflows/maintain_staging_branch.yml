@@ -21,5 +21,3 @@ jobs:
       # Step 2: Reset staging branch to match main
       - name: Reset staging to main
         uses: ./.github/actions/action_name
-        with:
-          primary-branch: main
