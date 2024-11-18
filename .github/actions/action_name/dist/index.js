@@ -3,13 +3,9 @@ import * as github from '@actions/github'
 import { exec } from '@actions/exec'
 
 const token = core.getInput('github-token', { required: true })
+const primaryBranch = core.getInput('primary-branch', { required: true })
 const octokit = github.getOctokit(token)
-// octokit.rest.issues.createComment({
-//   owner: github.context.repo.owner,
-//   repo: github.context.repo.repo,
-//   issue_number: 1,
-//   body: 'This PR sucks!'
-// })
+
 
 const pullRequests = await octokit.rest.pulls.list({
   ...github.context.repo,
@@ -19,8 +15,7 @@ const pullRequests = await octokit.rest.pulls.list({
 })
 await exec('git config --global user.email "github-actions@github.com"')
 await exec('git config --global user.name "github-actions"')
-await exec('git checkout staging')
-await exec('git reset --hard origin/main')
+await exec('git', ['reset', '--hard', `origin/${primaryBranch}`])
 
 for (const pr of pullRequests.data) {
   const { title, number, labels, head: { ref: branch } } = pr
