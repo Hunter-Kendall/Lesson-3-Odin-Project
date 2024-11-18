@@ -21,7 +21,7 @@ for (const pr of pullRequests.data) {
   const { title, number, labels, head: { ref: branch } } = pr
   if (labels.some(label => label.name.toLowerCase() === 'staging')) {
     try {
-      await exec('git', ['merge', `origin/${branch}`, '--squash'])
+      await exec('git', ['merge', `origin/${branch}`, '--squash', '--verbose'])
       await exec('git', ['commit', '-m', `${title} (#${number})`])
     } catch(error) {
       await exec('git restore --staged .')
