@@ -15,7 +15,7 @@ const pullRequests = await octokit.rest.pulls.list({
 })
 await exec('git config --global user.email "github-actions@github.com"')
 await exec('git config --global user.name "github-actions"')
-await exec('git', ['reset', '--hard', `origin/${primaryBranch}`])
+await exec('git', ['reset', '--hard', 'origin/main'])
 
 for (const pr of pullRequests.data) {
   const { title, number, labels, head: { ref: branch } } = pr
