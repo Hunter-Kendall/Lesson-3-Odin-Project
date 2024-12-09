@@ -17,8 +17,24 @@ await exec('git config --global user.email "github-actions@github.com"')
 await exec('git config --global user.name "github-actions"')
 await exec('git', ['reset', '--hard', 'origin/main'])
 
+function extractFilenamesFromConflicts(logText) {
+  // Use a regular expression to match filenames following "CONFLICT (content): Merge conflict in"
+  const regex = /CONFLICT \(content\): Merge conflict in\s+([^\n]+)/g
+  const matches = []
+  let match
+
+  // Use a loop to find all matches
+  while ((match = regex.exec(logText)) !== null) {
+    matches.push(match[1]) // Capture the filename
+  }
+
+  return matches
+}
+
 function formatCommentBody(mergeConflictMessage, consoleErrorMessage){
-  let conflictMessage = `Merge Conflict: ${mergeConflictMessage}`
+  const formattedConflictFiles = extractFilenamesFromConflicts(mergeConflictMessage).join('\n')
+
+  let conflictMessage = `Merge Conflicts in these files:\n${formattedConflictFiles}`
   if (consoleErrorMessage) {
     conflictMessage += `\n\nMerge Command Error: ${consoleErrorMessage}`
   }
