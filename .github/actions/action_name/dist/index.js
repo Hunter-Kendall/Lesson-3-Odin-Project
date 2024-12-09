@@ -40,15 +40,15 @@ for (const pr of pullRequests.data) {
       console.log(execOutput)
     } catch(error) {
       console.log('exec error: ', execError)
-      await exec('git restore --staged .')
-      await exec('git restore .')
-      await exec('git clean -df')
       octokit.rest.issues.createComment({
         owner: github.context.repo.owner,
         repo: github.context.repo.repo,
         issue_number: number,
         body: `error: ${execError}`,
       })
+      await exec('git restore --staged .')
+      await exec('git restore .')
+      await exec('git clean -df')
     }
   }
 }
