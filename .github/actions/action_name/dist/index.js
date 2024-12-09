@@ -26,7 +26,7 @@ const options = {
       execOutput += data.toString()
     },
     stderr: (data) => {
-      console.log('here:', data)
+      console.log('here:', data.toString())
       execError += data.toString()
     },
   },
@@ -39,7 +39,6 @@ for (const pr of pullRequests.data) {
       await exec('git', ['merge', `origin/${branch}`, '--squash', '--verbose'], options)
       await exec('git', ['commit', '-m', `${title} (#${number})`])
       console.log(execOutput)
-      execOutput = ''
     } catch(error) {
       console.log('exec error: ', execError)
       await exec('git restore --staged .')
@@ -51,7 +50,6 @@ for (const pr of pullRequests.data) {
         issue_number: number,
         body: `error: ${execError}`,
       })
-      execError = ''
     }
   }
 }
