@@ -17,12 +17,28 @@ await exec('git config --global user.email "github-actions@github.com"')
 await exec('git config --global user.name "github-actions"')
 await exec('git', ['reset', '--hard', 'origin/main'])
 
+let execOutput = ''
+let execError = ''
+
+const options = {
+  listeners: {
+    stdout: (data) => {
+      execOutput += data.toString()
+    },
+    stderr: (data) => {
+      execError += data.toString()
+    },
+  },
+}
+
 for (const pr of pullRequests.data) {
   const { title, number, labels, head: { ref: branch } } = pr
   if (labels.some(label => label.name.toLowerCase() === 'staging')) {
     try {
-      await exec('git', ['merge', `origin/${branch}`, '--squash'])
+      await exec('git', ['merge', `origin/${branch}`, '--squash', '--verbose'])
       await exec('git', ['commit', '-m', `${title} (#${number})`])
+      console.log(execOutput)
+      execOutput = ''
     } catch(error) {
       await exec('git restore --staged .')
       await exec('git restore .')
@@ -31,9 +47,37 @@ for (const pr of pullRequests.data) {
         owner: github.context.repo.owner,
         repo: github.context.repo.repo,
         issue_number: number,
-        body: error.message,
+        body: execError,
       })
+      execError = ''
     }
   }
 }
 await exec('git push --force')
+
+
+const closedPullRequests = await octokit.rest.pulls.list({
+  ...github.context.repo,
+  state: 'closed',
+  sort: 'created',
+  direction: 'asc',
+})
+
+const repoLabels = await octokit.rest.issues.listLabelsForRepo({
+  owner: github.context.repo.owner,
+  repo: github.context.repo.repo,
+});
+
+const stagingLabelName = repoLabels.data.find(label => label.name.toLowerCase() === 'staging').name
+
+for (const closedPr of closedPullRequests.data) {
+  const { number, labels } = closedPr
+  if (labels.some(label => label.name.toLowerCase() === 'staging')) {
+    octokit.rest.issues.removeLabel({
+      owner: github.context.repo.owner,
+      repo: github.context.repo.repo,
+      issue_number: number,
+      name: stagingLabelName,
+    })
+  }
+}
