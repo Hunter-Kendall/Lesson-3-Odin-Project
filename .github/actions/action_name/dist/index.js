@@ -37,3 +37,23 @@ for (const pr of pullRequests.data) {
   }
 }
 await exec('git push --force')
+
+
+const closedPullRequests = await octokit.rest.pulls.list({
+  ...github.context.repo,
+  state: 'closed',
+  sort: 'created',
+  direction: 'asc',
+})
+
+for (const closedPr of closedPullRequests.data) {
+  const { number, labels } = closedPr
+  if (labels.some(label => label.name.toLowerCase() === 'staging')) {
+    octokit.rest.issues.removeLabel({
+      owner: github.context.repo.owner,
+      repo: github.context.repo.repo,
+      issue_number: number,
+      name: 'staging',
+    })
+  }
+}
