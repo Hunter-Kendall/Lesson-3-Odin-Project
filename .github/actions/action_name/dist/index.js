@@ -40,6 +40,7 @@ for (const pr of pullRequests.data) {
       console.log(execOutput)
       execOutput = ''
     } catch(error) {
+      console.log(execError)
       await exec('git restore --staged .')
       await exec('git restore .')
       await exec('git clean -df')
@@ -56,28 +57,28 @@ for (const pr of pullRequests.data) {
 await exec('git push --force')
 
 
-const closedPullRequests = await octokit.rest.pulls.list({
-  ...github.context.repo,
-  state: 'closed',
-  sort: 'created',
-  direction: 'asc',
-})
-
-const repoLabels = await octokit.rest.issues.listLabelsForRepo({
-  owner: github.context.repo.owner,
-  repo: github.context.repo.repo,
-});
-
-const stagingLabelName = repoLabels.data.find(label => label.name.toLowerCase() === 'staging').name
-
-for (const closedPr of closedPullRequests.data) {
-  const { number, labels } = closedPr
-  if (labels.some(label => label.name.toLowerCase() === 'staging')) {
-    octokit.rest.issues.removeLabel({
-      owner: github.context.repo.owner,
-      repo: github.context.repo.repo,
-      issue_number: number,
-      name: stagingLabelName,
-    })
-  }
-}
+// const closedPullRequests = await octokit.rest.pulls.list({
+//   ...github.context.repo,
+//   state: 'closed',
+//   sort: 'created',
+//   direction: 'asc',
+// })
+//
+// const repoLabels = await octokit.rest.issues.listLabelsForRepo({
+//   owner: github.context.repo.owner,
+//   repo: github.context.repo.repo,
+// });
+//
+// const stagingLabelName = repoLabels.data.find(label => label.name.toLowerCase() === 'staging').name
+//
+// for (const closedPr of closedPullRequests.data) {
+//   const { number, labels } = closedPr
+//   if (labels.some(label => label.name.toLowerCase() === 'staging')) {
+//     octokit.rest.issues.removeLabel({
+//       owner: github.context.repo.owner,
+//       repo: github.context.repo.repo,
+//       issue_number: number,
+//       name: stagingLabelName,
+//     })
+//   }
+// }
