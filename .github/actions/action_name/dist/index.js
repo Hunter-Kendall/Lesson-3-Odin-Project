@@ -17,22 +17,21 @@ await exec('git config --global user.email "github-actions@github.com"')
 await exec('git config --global user.name "github-actions"')
 await exec('git', ['reset', '--hard', 'origin/main'])
 
-let execOutput = ''
-let execError = ''
-
-const options = {
-  listeners: {
-    stdout: (data) => {
-      execOutput += data.toString()
-    },
-    stderr: (data) => {
-      console.log('here:', data.toString())
-      execError += data.toString()
-    },
-  },
-}
-
 for (const pr of pullRequests.data) {
+  let execOutput = ''
+  let execError = ''
+
+  const options = {
+    listeners: {
+      stdout: (data) => {
+        execOutput += data.toString()
+      },
+      stderr: (data) => {
+        console.log('here:', data.toString())
+        execError += data.toString()
+      },
+    },
+  }
   const { title, number, labels, head: { ref: branch } } = pr
   if (labels.some(label => label.name.toLowerCase() === 'staging')) {
     try {
