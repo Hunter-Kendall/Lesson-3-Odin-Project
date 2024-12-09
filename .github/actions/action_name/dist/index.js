@@ -35,6 +35,7 @@ for (const pr of pullRequests.data) {
   const { title, number, labels, head: { ref: branch } } = pr
   if (labels.some(label => label.name.toLowerCase() === 'staging')) {
     try {
+      console.log('options: ', options)
       await exec('git', ['merge', `origin/${branch}`, '--squash', '--verbose'], options)
       await exec('git', ['commit', '-m', `${title} (#${number})`])
       console.log(execOutput)
