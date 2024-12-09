@@ -17,45 +17,50 @@ await exec('git config --global user.email "github-actions@github.com"')
 await exec('git config --global user.name "github-actions"')
 await exec('git', ['reset', '--hard', 'origin/main'])
 
+function formatCommentBody(mergeConflictMessage, consoleErrorMessage){
+  let conflictMessage = `Merge Conflict: ${mergeConflictMessage}`
+  if (consoleErrorMessage) {
+    conflictMessage += `\n\nMerge Command Error: ${consoleErrorMessage}`
+  }
+  return conflictMessage
+}
+
 for (const pr of pullRequests.data) {
   let execOutput = ''
   let execError = ''
-
   const options = {
     listeners: {
       stdout: (data) => {
         execOutput += data.toString()
       },
       stderr: (data) => {
-        console.log('here:', data.toString())
         execError += data.toString()
       },
     },
   }
+
   const { title, number, labels, head: { ref: branch } } = pr
   if (labels.some(label => label.name.toLowerCase() === 'staging')) {
     try {
-      console.log('options: ', options)
       await exec('git', ['merge', `origin/${branch}`, '--squash', '--verbose'], options)
       await exec('git', ['commit', '-m', `${title} (#${number})`])
-      console.log(execOutput)
     } catch(error) {
-      console.log('exec error: ', execError)
+      await exec('git restore --staged .')
+      await exec('git restore .')
+      await exec('git clean -df')
       octokit.rest.issues.createComment({
         owner: github.context.repo.owner,
         repo: github.context.repo.repo,
         issue_number: number,
-        body: `error: ${execOutput}`,
+        body: formatCommentBody(execOutput, execError),
       })
-      await exec('git restore --staged .')
-      await exec('git restore .')
-      await exec('git clean -df')
     }
   }
 }
+
 await exec('git push --force')
 
-
+// Removing staging labels from closed PRs
 const closedPullRequests = await octokit.rest.pulls.list({
   ...github.context.repo,
   state: 'closed',
