@@ -45,7 +45,7 @@ for (const pr of pullRequests.data) {
         owner: github.context.repo.owner,
         repo: github.context.repo.repo,
         issue_number: number,
-        body: `error: ${execError}`,
+        body: `error: ${execOutput}`,
       })
       await exec('git restore --staged .')
       await exec('git restore .')
