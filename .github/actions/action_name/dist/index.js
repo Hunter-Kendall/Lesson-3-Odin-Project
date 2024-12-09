@@ -46,12 +46,12 @@ const closedPullRequests = await octokit.rest.pulls.list({
   direction: 'asc',
 })
 
-const repoLabels = octokit.rest.issues.listLabelsForRepo({
+const repoLabels = await octokit.rest.issues.listLabelsForRepo({
   owner: github.context.repo.owner,
   repo: github.context.repo.repo,
 });
 
-const stagingLabelName = repoLabels.find(label => label.name.toLowerCase() === 'staging')
+const stagingLabelName = repoLabels.data.find(label => label.name.toLowerCase() === 'staging').name
 
 for (const closedPr of closedPullRequests.data) {
   const { number, labels } = closedPr
